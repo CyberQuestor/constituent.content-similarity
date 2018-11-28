@@ -1,0 +1,28 @@
+{
+  "id": "default",
+  "description": "Default settings",
+  "engineFactory": "org.template.similarity.TextSimilarityEngine",
+  "datasource": {
+    "params" : {
+      "appName": "INVALID_APP_NAME",
+      "word2VecTrainFile":"" 
+    }
+  },
+  "algorithms": [
+    {
+      "name": "tsimilarity",
+      "params": {
+        "seed" : 75,
+        "minCount": 1,
+        "learningRate": 0.025,
+        "numIterations": 1,
+        "vectorSize": 100,
+        "minTokenSize": 3, 
+        "showText": false,
+        "showDesc": false,
+        "useExtTrainWords": true,
+        "storeClearText": false
+      }
+    }
+  ]
+}

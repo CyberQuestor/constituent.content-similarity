@@ -1,0 +1,19 @@
+.DS_Store
+manifest.json
+target/
+pio.log
+/pio.sbt
+project/plugins.sbt
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+.cache-main
+.cache-tests
+project/project/
+
+# IntelliJ
+*.iml
+.idea/
