@@ -1,7 +1,7 @@
 {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "org.template.similarity.TextSimilarityEngine",
+  "engineFactory": "com.hs.haystack.tachyon.constituent.contentsimilarity.TextSimilarityEngine",
   "datasource": {
     "params" : {
       "appName": "INVALID_APP_NAME",
