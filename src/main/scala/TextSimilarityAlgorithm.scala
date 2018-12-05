@@ -23,15 +23,19 @@ case class AlgorithmParams(
   val showText: Boolean,
   val showDesc: Boolean,
   val useExtTrainWords: Boolean,
-  val storeClearText: Boolean
+  val storeClearText: Boolean,
+  val showDomain: Boolean,
+  val showType: Boolean
 ) extends Params
 
 class TSModel(
   val word2VecModel: Word2VecModel,
-  val docPairs: List[((String,String,String,String), breeze.linalg.DenseVector[Double])],
+  val docPairs: List[((String,String,String,String,String,String), breeze.linalg.DenseVector[Double])],
   val vectorSize: Int,
   val showText: Boolean,
-  val showDesc: Boolean
+  val showDesc: Boolean,
+  val showDomain: Boolean,
+  val showType: Boolean
 ) extends Serializable {}
 
 class TextSimilarityAlgorithm(val ap: AlgorithmParams) extends P2LAlgorithm[PreparedData, TSModel, Query, PredictedResult] {
@@ -41,7 +45,7 @@ class TextSimilarityAlgorithm(val ap: AlgorithmParams) extends P2LAlgorithm[Prep
   def train(sc: SparkContext, data: PreparedData): TSModel = {
     println("Training text similarity model.")
 
-    val art1 = data.docs.map(x=>((x._2+{if (ap.useExtTrainWords) " "+x._3 else ""}).toLowerCase.replace("."," ").split(" ").filter(k => !stopwords.contains(k)).map(normalizet).filter(_.trim.length>=ap.minTokenSize).toSeq, (x._1,x._2,x._3,x._4))).filter(_._1.size>0)
+    val art1 = data.docs.map(x=>((x._2+{if (ap.useExtTrainWords) " "+x._3 else ""}).toLowerCase.replace("."," ").split(" ").filter(k => !stopwords.contains(k)).map(normalizet).filter(_.trim.length>=ap.minTokenSize).toSeq, (x._1,x._2,x._3,x._4,x._5,x._6))).filter(_._1.size>0)
     
     val word2vec = new Word2Vec()
     word2vec.setSeed(ap.seed)
@@ -61,12 +65,12 @@ class TextSimilarityAlgorithm(val ap: AlgorithmParams) extends P2LAlgorithm[Prep
 
     val model = word2vec.fit(vwtrain)
 
-    val art_pairs = art1.map(x => ( {if (ap.storeClearText) (x._2._1,x._2._2,x._2._3,x._2._4) else (x._2._1,"","","")}, new DenseVector(divArray(x._1.map(m => wordToVector(m, model, ap.vectorSize).toArray).reduceLeft(sumArray),x._1.length)).asInstanceOf[Vector]))	
+    val art_pairs = art1.map(x => ( {if (ap.storeClearText) (x._2._1,x._2._2,x._2._3,x._2._4,x._2._5,x._2._6) else (x._2._1,"","","",x._2._5,x._2._6)}, new DenseVector(divArray(x._1.map(m => wordToVector(m, model, ap.vectorSize).toArray).reduceLeft(sumArray),x._1.length)).asInstanceOf[Vector]))	
 
     val normalizer1 = new Normalizer()
     val art_pairsb = art_pairs.map(x=>(x._1, normalizer1.transform(x._2))).map(x=>(x._1,{new breeze.linalg.DenseVector(x._2.toArray)}))	
 
-    new TSModel(model, art_pairsb.collect.toList, ap.vectorSize, ap.showText, ap.showDesc)
+    new TSModel(model, art_pairsb.collect.toList, ap.vectorSize, ap.showText, ap.showDesc, ap.showDomain, ap.showType)
   }
 
   def predict(model: TSModel, query: Query): PredictedResult = {
@@ -77,7 +81,7 @@ class TextSimilarityAlgorithm(val ap: AlgorithmParams) extends P2LAlgorithm[Prep
     val td02w2vn = normalizer1.transform(td02w2v)
     val td02bv = new breeze.linalg.DenseVector(td02w2vn.toArray)
         
-    val r = model.docPairs.map(x=>(td02bv.dot(x._2),x._1)).sortWith(_._1>_._1).take(query.limit).map(x=>{new DocScore(x._1, x._2._1, if(model.showText) x._2._2 else "", if (model.showDesc) x._2._4 else "")})
+    val r = model.docPairs.map(x=>(td02bv.dot(x._2),x._1)).sortWith(_._1>_._1).take(query.limit).map(x=>{new DocScore(x._1, x._2._1, if(model.showText) x._2._2 else "", if (model.showDesc) x._2._4 else "", if (model.showDomain) x._2._5 else "", if (model.showType) x._2._6 else "")})
  
     PredictedResult(docScores = r.toArray)
   }

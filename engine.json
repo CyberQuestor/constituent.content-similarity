@@ -20,6 +20,8 @@
         "minTokenSize": 3, 
         "showText": false,
         "showDesc": false,
+        "showDomain": true,
+        "showType": true,
         "useExtTrainWords": true,
         "storeClearText": false
       }
