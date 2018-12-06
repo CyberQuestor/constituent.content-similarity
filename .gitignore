@@ -14,6 +14,7 @@ bin/
 .cache-tests
 project/project/
 project/target/
+.worksheet/
 
 # IntelliJ
 *.iml
