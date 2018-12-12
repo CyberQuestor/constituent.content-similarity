@@ -5,7 +5,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
 class PreparedData(
-  val docs: RDD[(String,String,String,String,String,String)],
+  val docs: RDD[(String,String,String,String)],
   val word2VecTrainFile: String
 ) extends Serializable
 

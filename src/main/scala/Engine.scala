@@ -17,9 +17,7 @@ case class DocScore(
   score: Double,
   id: String,
   similarText: String,
-  textDesc: String,
-  domain: String,
-  contentType: String	
+  textDesc: String
 ) extends Serializable
 
 object TextSimilarityEngine extends EngineFactory {
