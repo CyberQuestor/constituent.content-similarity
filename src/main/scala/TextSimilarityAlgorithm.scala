@@ -44,6 +44,7 @@ class TextSimilarityAlgorithm(val ap: AlgorithmParams) extends P2LAlgorithm[Prep
 
   def train(sc: SparkContext, data: PreparedData): TSModel = {
     println("Training text similarity model.")
+    println("Min count is:" + ap.minCount)
 
     val art1 = data.docs.map(x=>((x._2+{if (ap.useExtTrainWords) " "+x._3 else ""}).toLowerCase.replace("."," ").split(" ").filter(k => !stopwords.contains(k)).map(normalizet).filter(_.trim.length>=ap.minTokenSize).toSeq, (x._1,x._2,x._3,x._4,x._5,x._6))).filter(_._1.size>0)
     
