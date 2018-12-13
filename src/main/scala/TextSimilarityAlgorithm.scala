@@ -40,11 +40,8 @@ class TextSimilarityAlgorithm(val ap: AlgorithmParams) extends P2LAlgorithm[Prep
 
   def train(sc: SparkContext, data: PreparedData): TSModel = {
     println("Training text similarity model.")
-    println("Min count is:" + ap.minCount)
 
     val art1 = data.docs.map(x=>((x._2+{if (ap.useExtTrainWords) " "+x._3 else ""}).toLowerCase.replace("."," ").split(" ").filter(k => !stopwords.contains(k)).map(normalizet).filter(_.trim.length>=ap.minTokenSize).toSeq, (x._1,x._2,x._3,x._4))).filter(_._1.size>0)
-    
-    println("art1 is:" + art1)
     
     val word2vec = new Word2Vec()
     word2vec.setSeed(ap.seed)
@@ -61,14 +58,10 @@ class TextSimilarityAlgorithm(val ap: AlgorithmParams) extends P2LAlgorithm[Prep
 
       aa.cache
     }
-    
-     println("art1 is:" + vwtrain)
 
     val model = word2vec.fit(vwtrain)
 
     val art_pairs = art1.map(x => ( {if (ap.storeClearText) (x._2._1,x._2._2,x._2._3,x._2._4) else (x._2._1,"","","")}, new DenseVector(divArray(x._1.map(m => wordToVector(m, model, ap.vectorSize).toArray).reduceLeft(sumArray),x._1.length)).asInstanceOf[Vector]))	
-
-    println("art_pairs are:" + art_pairs)
     
     val normalizer1 = new Normalizer()
     val art_pairsb = art_pairs.map(x=>(x._1, normalizer1.transform(x._2))).map(x=>(x._1,{new breeze.linalg.DenseVector(x._2.toArray)}))	
