@@ -58,6 +58,9 @@ class TextSimilarityAlgorithm(val ap: AlgorithmParams) extends P2LAlgorithm[Prep
 
       aa.cache
     }
+    
+    println("top 50")
+    vwtrain.take(50).foreach(println)
 
     val model = word2vec.fit(vwtrain)
 
