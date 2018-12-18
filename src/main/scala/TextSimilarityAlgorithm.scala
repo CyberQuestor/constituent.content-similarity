@@ -73,6 +73,8 @@ class TextSimilarityAlgorithm(val ap: AlgorithmParams) extends P2LAlgorithm[Prep
   }
 
   def predict(model: TSModel, query: Query): PredictedResult = {
+    println("enterin predict")
+    println("showing desc is: " + model.showDesc)
     //Prepare query vector
     val td02 = query.doc.split(" ").filter(k => !stopwords.contains(k)).map(normalizet).filter(_.trim.length>1).toSeq
     val td02w2v = new DenseVector(divArray(td02.map(m => wordToVector(m, model.word2VecModel, model.vectorSize).toArray).reduceLeft(sumArray),td02.length)).asInstanceOf[Vector]
