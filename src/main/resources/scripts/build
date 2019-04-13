@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+#NAME=content-similarity
+
+# Read configuration file if it is present
+[ -r ../conf/pipeline.conf ] && . ../conf/pipeline.conf
+
+# Read configuration file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+cd ../pipeline
+
+${PIO_HOME}/bin/pio build --verbose
+
+cd .

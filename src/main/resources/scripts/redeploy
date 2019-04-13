@@ -1,0 +1,58 @@
+#!/bin/bash
+set -e
+
+TRAIN_RESULT=./train 	#train the models
+
+######################
+# Start of training notification - enable if required
+######################
+echo -n "Training ended with return value $TRAIN_RESULT at " | tee -a $LOG_FILE
+date | tee -a $LOG_FILE
+
+if [[ $TRAIN_RESULT -ne 0 ]]; then
+  #mail -s "Error in train: $EMAIL_SUBJECT $TIMESTAMP" -a "From: $FROM_EMAIL" $TARGET_EMAIL < $LOG_FILE
+  echo -n "Train script aborted at "
+  date
+  exit 1
+fi
+
+######################
+# End of training notification
+######################
+
+DEPLOY_RESULT=[ $TRAIN_RESULT -eq 0 ] && ./deploy	#deploy the trained models (if there was no errors)
+
+######################
+# Start of deploy notification - enable if required
+######################
+echo -n "Deploy ended with return value $DEPLOY_RESULT at " | tee -a $LOG_FILE
+date | tee -a $LOG_FILE
+
+if [[ $DEPLOY_RESULT -ne 0 ]]; then
+  #mail -s "Error in train: $EMAIL_SUBJECT $TIMESTAMP" -a "From: $FROM_EMAIL" $TARGET_EMAIL < $LOG_FILE
+  echo -n "Deploy script aborted at "
+  date
+  exit 1
+fi
+
+######################
+# End of deploy notification
+######################
+
+
+
+######################
+# Start of success notification - enable if required
+######################
+
+if [ $TRAIN_RESULT -eq 0 ] && [ $DEPLOY_RESULT -eq 0 ]; then
+  #mail -s "Normal: $EMAIL_SUBJECT $TIMESTAMP" -a "From: $FROM_EMAIL" $TARGET_EMAIL < $LOG_FILE
+  echo -n "Successfully redeployed pipeline at "
+  date
+  exit 1
+fi
+
+
+######################
+# End of success notification
+######################
