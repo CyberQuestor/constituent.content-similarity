@@ -48,7 +48,7 @@ check_non_empty "$HOST"    "HOSTNAME at pipeline.conf"
 check_non_empty "$HOSTNAME"    "HOSTNAME at pipeline.conf"
 check_non_empty "$PORT"        "PORT at pipeline.conf"
 check_non_empty "$ACCESSKEY"   "ACCESSKEY at pipeline.conf"
-check_non_empty "$ENGINE_JSON" "ENGINE_JSON at train script file"
+check_non_empty "$ENGINE_JSON" "ENGINE_JSON at deploy script file"
 
 #check_non_empty "$FROM_EMAIL"   "FROM_EMAIL at pipeline.conf"
 #check_non_empty "$TARGET_EMAIL" "TARGET_EMAIL at pipeline.conf"
