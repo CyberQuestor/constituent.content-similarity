@@ -77,11 +77,11 @@ DEPLOY_COMMAND="${PIO_HOME}/bin/pio deploy -v $ENGINE_JSON
 [ -n "$DEPLOY_MASTER" ] && DEPLOY_COMMAND="$DEPLOY_COMMAND --master $DEPLOY_MASTER"
 
 # Print the command then quit if we see any arguments (use for debug only)
-if [[ "$1" != "" ]]; then
+#if [[ "$1" != "" ]]; then
   #echo "[DEBUG] Commands to be run (not actually running it):"
   #echo "$(echo $DEPLOY_COMMAND | sed "s/\\n//g")"
   #exit -1
-fi
+#fi
 
 ##################
 # End of script

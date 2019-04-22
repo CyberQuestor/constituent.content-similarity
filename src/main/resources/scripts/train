@@ -72,11 +72,11 @@ TRAIN_COMMAND="${PIO_HOME}/bin/pio train --verbose -v $ENGINE_JSON
 [ -n "$TRAIN_MASTER" ] && TRAIN_COMMAND="$TRAIN_COMMAND --master $TRAIN_MASTER"
 
 # Print the command then quit if we see any arguments (use for debug only)
-if [[ "$1" != "" ]]; then
+#if [[ "$1" != "" ]]; then
   #echo "[DEBUG] Commands to be run (not actually running it):"
   #echo "$(echo $TRAIN_COMMAND | sed "s/\\n//g")"
   #exit -1
-fi
+#fi
 
 
 ##################
