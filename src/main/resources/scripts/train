@@ -2,6 +2,9 @@
 #set -e
 #NAME=content-similarity
 
+my_dir="$(dirname "$0")"
+cd $my_dir
+
 ###############################################################################
 # Configuration - read this section, modify only at conf/pipeline.conf
 ###############################################################################
@@ -13,17 +16,17 @@
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
 
 # set up the logging file
-TIMESTAMP=`date +"%Y%m%d-%H%M%S"`
-LOG_FILE="${LOG_DIR}/${NAME}/logs/train_${NAME}_${TIMESTAMP}.log"
-LOGS="$LOG_DIR/$NAME/logs/train"*
-ARCHIVE="$LOG_DIR/$NAME/archive"
+TRAIN_TIMESTAMP=`date +"%Y%m%d-%H%M%S"`
+TRAIN_LOG_FILE="${LOG_DIR}/${NAME}/logs/train_${NAME}_${TRAIN_TIMESTAMP}.log"
+TRAIN_LOGS="$LOG_DIR/$NAME/logs/train"*
+TRAIN_ARCHIVE="$LOG_DIR/$NAME/archive"
 mkdir -p "$LOG_DIR/$NAME/logs"
 mkdir -p "$LOG_DIR/$NAME/archive"
-[ "$(ls -A $LOGS)" ] && mv $LOGS "$LOG_DIR/$NAME/archive"
-touch "$LOG_FILE"
+[ "$(ls -A $TRAIN_LOGS)" ] && mv $TRAIN_LOGS "$LOG_DIR/$NAME/archive"
+touch "$TRAIN_LOG_FILE"
 
 # enginex_algo_dev.json, enginey_null_prod.json
-ENGINE_JSON=engine.json
+TRAIN_ENGINE_JSON=engine.json
 
 ###############################################################################
 # End of configuration
@@ -46,8 +49,8 @@ check_non_empty "$PIO_HOME"     "PIO_HOME at pipeline.conf"
 check_non_empty "$LOG_DIR"      "LOG_DIR at pipeline.conf"
 check_non_empty "$HOSTNAME"    "HOSTNAME at pipeline.conf"
 check_non_empty "$PORT"        "PORT at pipeline.conf"
-check_non_empty "$ACCESSKEY"   "ACCESSKEY at pipeline.conf"
-check_non_empty "$ENGINE_JSON" "ENGINE_JSON at train script file"
+check_non_empty "$ACCESS_KEY"   "ACCESSKEY at pipeline.conf"
+check_non_empty "$TRAIN_ENGINE_JSON" "TRAIN_ENGINE_JSON at train script file"
 
 #check_non_empty "$FROM_EMAIL"   "FROM_EMAIL at pipeline.conf"
 #check_non_empty "$TARGET_EMAIL" "TARGET_EMAIL at pipeline.conf"
@@ -63,7 +66,7 @@ check_non_empty "$ENGINE_JSON" "ENGINE_JSON at train script file"
 # Start of script
 ##################
 
-TRAIN_COMMAND="${PIO_HOME}/bin/pio train --verbose -v $ENGINE_JSON
+TRAIN_COMMAND="${PIO_HOME}/bin/pio train --verbose -v $TRAIN_ENGINE_JSON
     --
     --executor-memory $TRAIN_EXECUTOR_MEMORY
     --driver-memory $TRAIN_DRIVER_MEMORY
@@ -88,15 +91,19 @@ TRAIN_COMMAND="${PIO_HOME}/bin/pio train --verbose -v $ENGINE_JSON
 # Actually running it
 ######################
 
+printf "\nSubmit training.\n"
+
 cd ../pipeline
 
-$($TRAIN_COMMAND 1>$LOG_FILE 2>&1) &
-RESULT=$?
+$($TRAIN_COMMAND 1>$TRAIN_LOG_FILE 2>&1)
+TRAIN_RESULT=$?
 
 cd .. # change back to the location of the script
 
+printf "\nTraining complete. Watch logs for details.\n"
 ######################
 # End of actual running
 ######################
 
-exit $RESULT
+# do not exit here if it is being sourced at redeploy and you want to access all variables
+exit $TRAIN_RESULT

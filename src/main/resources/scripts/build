@@ -2,6 +2,9 @@
 set -e
 #NAME=content-similarity
 
+my_dir="$(dirname "$0")"
+cd $my_dir
+
 # Read configuration file if it is present
 [ -r ../conf/pipeline.conf ] && . ../conf/pipeline.conf
 
