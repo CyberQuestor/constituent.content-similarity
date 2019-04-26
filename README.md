@@ -47,7 +47,7 @@ It is time to prepare constituent unit files that eventually manifests as a HML 
 #### Initiate first time training and deploy
 It is important to complete at least one iteration of build, train and deploy cycle prior to consumption.
 
-- Go to folder as cd /var/lib/haystack/pio/constituents/constituent.content-similarity/bin
+- Go to bin folder as `cd /var/lib/haystack/pio/constituents/constituent.content-similarity/bin`
 - Build the prediction unit as,
     - `./build`
 - Train the predictive model as (ensure events migration is complete),
