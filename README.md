@@ -27,7 +27,7 @@ The first element is to generate access tokens denoted as prediction pipeline un
 It is time to prepare constituent unit files that eventually manifests as a HML pipeline.
 
 - Retrieve engine files by cloning relevant git repository
-    - Setup the folder as `mkdir -p /var/lib/haystack/pio/constituents/constituent.shell`
+    - Setup the folder as `mkdir -p /var/lib/haystack/pio/constituents/constituent.content-similarity`
     - Go to folder as `cd /var/lib/haystack/pio/constituents/constituent.content-similarity`
     - Generate structure folders as; `mkdir bin conf pipeline`
     - Go to pipeline folder and get all files as
